@@ -8,6 +8,10 @@
 		<IsTrimmable>True</IsTrimmable>
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Title>File Dialog</Title>
+		<Authors>popcron</Authors>
+		<Company>game-simulations</Company>
+		<RepositoryUrl>https://github.com/game-simulations/file-dialog</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
