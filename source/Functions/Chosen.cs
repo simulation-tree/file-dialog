@@ -2,7 +2,7 @@
 using Unmanaged;
 using Worlds;
 
-namespace FileDialog.Functions
+namespace FileDialogs.Functions
 {
     public unsafe readonly struct Chosen : IEquatable<Chosen>
     {
@@ -28,7 +28,7 @@ namespace FileDialog.Functions
             return ((nint)function).GetHashCode();
         }
 
-        public readonly void Invoke(World world, FileDialogEntity.Type type, FileDialogEntity.Status status, USpan<Text> paths, ulong userData)
+        public readonly void Invoke(World world, FileDialogType type, FileDialogStatus status, USpan<Text> paths, ulong userData)
         {
             using Allocation pathsAllocation = Allocation.Create(paths);
             function(new Input(world, type, status, pathsAllocation, paths.Length, userData));
@@ -47,8 +47,8 @@ namespace FileDialog.Functions
         public readonly struct Input
         {
             public readonly World world;
-            public readonly FileDialogEntity.Type type;
-            public readonly FileDialogEntity.Status status;
+            public readonly FileDialogType type;
+            public readonly FileDialogStatus status;
             public readonly ulong userData;
 
             private readonly Allocation paths;
@@ -66,7 +66,7 @@ namespace FileDialog.Functions
             /// </summary>
             public readonly USpan<Text> Paths => paths.AsSpan<Text>(0, pathCount);
 
-            public Input(World world, FileDialogEntity.Type type, FileDialogEntity.Status status, Allocation paths, uint pathCount, ulong userData)
+            public Input(World world, FileDialogType type, FileDialogStatus status, Allocation paths, uint pathCount, ulong userData)
             {
                 this.world = world;
                 this.type = type;

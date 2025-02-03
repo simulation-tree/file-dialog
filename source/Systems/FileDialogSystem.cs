@@ -1,4 +1,4 @@
-﻿using FileDialog.Components;
+﻿using FileDialogs.Components;
 using NativeFileDialogSharp;
 using Simulation;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Unmanaged;
 using Worlds;
 
-namespace FileDialog.Systems
+namespace FileDialogs.Systems
 {
     public readonly partial struct FileDialogSystem : ISystem
     {
@@ -40,23 +40,23 @@ namespace FileDialog.Systems
             foreach (var r in query)
             {
                 ref IsFileDialog fileDialog = ref r.component1;
-                if (fileDialog.state == FileDialogEntity.Status.Uninitialized)
+                if (fileDialog.state == FileDialogStatus.Uninitialized)
                 {
-                    fileDialog.state = FileDialogEntity.Status.Shown;
+                    fileDialog.state = FileDialogStatus.Shown;
                     Task<DialogResult> task;
-                    if (fileDialog.type == FileDialogEntity.Type.OpenMultipleFiles)
+                    if (fileDialog.type == FileDialogType.OpenMultipleFiles)
                     {
                         task = OpenMultipleFiles(fileDialog.filter, fileDialog.defaultPath);
                     }
-                    else if (fileDialog.type == FileDialogEntity.Type.OpenFile)
+                    else if (fileDialog.type == FileDialogType.OpenFile)
                     {
                         task = OpenFile(fileDialog.filter, fileDialog.defaultPath);
                     }
-                    else if (fileDialog.type == FileDialogEntity.Type.SaveFile)
+                    else if (fileDialog.type == FileDialogType.SaveFile)
                     {
                         task = SaveFile(fileDialog.filter, fileDialog.defaultPath);
                     }
-                    else if (fileDialog.type == FileDialogEntity.Type.ChooseDirectory)
+                    else if (fileDialog.type == FileDialogType.ChooseDirectory)
                     {
                         task = ChooseDirectory(fileDialog.defaultPath);
                     }
@@ -82,7 +82,7 @@ namespace FileDialog.Systems
             {
                 if (result.IsOk)
                 {
-                    component.state = FileDialogEntity.Status.Completed;
+                    component.state = FileDialogStatus.Completed;
                     string? path = result.Path;
                     if (path?.Length == 0)
                     {
@@ -126,13 +126,13 @@ namespace FileDialog.Systems
                 {
                     if (result.IsCancelled)
                     {
-                        component.state = FileDialogEntity.Status.Cancelled;
+                        component.state = FileDialogStatus.Cancelled;
                         USpan<Text> paths = stackalloc Text[0];
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                     }
                     else
                     {
-                        component.state = FileDialogEntity.Status.Failed;
+                        component.state = FileDialogStatus.Failed;
                         USpan<Text> paths = stackalloc Text[1];
                         paths[0] = new(result.ErrorMessage);
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
@@ -142,7 +142,7 @@ namespace FileDialog.Systems
             }
             else
             {
-                component.state = FileDialogEntity.Status.Failed;
+                component.state = FileDialogStatus.Failed;
                 USpan<Text> paths = stackalloc Text[1];
                 paths[0] = new("NotCompletedSuccessfully");
                 component.callback.Invoke(world, component.type, component.state, paths, component.userData);
