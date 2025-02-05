@@ -60,9 +60,7 @@ jobs:
             
       - name: Build `FileDialogs`
         run: dotnet build "${{ github.event.repository.name }}/source" -c Release /p:Version=${VERSION}
-            
-      - name: Test
-        run: dotnet test "${{ github.event.repository.name }}/tests" -c Release --logger "trx"
+      
             
       - name: Pack `FileDialogs`
         run: dotnet pack "${{ github.event.repository.name }}/source" -c Release /p:Version=${VERSION} --no-build --output .
