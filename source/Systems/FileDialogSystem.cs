@@ -35,37 +35,44 @@ namespace FileDialogs.Systems
             }
 
             //start tasks
-            ComponentQuery<IsFileDialog> query = new(world);
-            query.ExcludeDisabled(true);
-            foreach (var r in query)
+            ComponentType componentType = world.Schema.GetComponent<IsFileDialog>();
+            foreach (Chunk chunk in world.Chunks)
             {
-                ref IsFileDialog fileDialog = ref r.component1;
-                if (fileDialog.state == FileDialogStatus.Uninitialized)
+                if (chunk.Definition.Contains(componentType))
                 {
-                    fileDialog.state = FileDialogStatus.Shown;
-                    Task<DialogResult> task;
-                    if (fileDialog.type == FileDialogType.OpenMultipleFiles)
+                    USpan<uint> entities = chunk.Entities;
+                    USpan<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
+                    for (uint i = 0; i < entities.Length; i++)
                     {
-                        task = OpenMultipleFiles(fileDialog.filter, fileDialog.defaultPath);
-                    }
-                    else if (fileDialog.type == FileDialogType.OpenFile)
-                    {
-                        task = OpenFile(fileDialog.filter, fileDialog.defaultPath);
-                    }
-                    else if (fileDialog.type == FileDialogType.SaveFile)
-                    {
-                        task = SaveFile(fileDialog.filter, fileDialog.defaultPath);
-                    }
-                    else if (fileDialog.type == FileDialogType.ChooseDirectory)
-                    {
-                        task = ChooseDirectory(fileDialog.defaultPath);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"File dialog type `{fileDialog.type}` is not supported");
-                    }
+                        ref IsFileDialog fileDialog = ref components[i];
+                        if (fileDialog.state == FileDialogStatus.Uninitialized)
+                        {
+                            fileDialog.state = FileDialogStatus.Shown;
+                            Task<DialogResult> task;
+                            if (fileDialog.type == FileDialogType.OpenMultipleFiles)
+                            {
+                                task = OpenMultipleFiles(fileDialog.filter, fileDialog.defaultPath);
+                            }
+                            else if (fileDialog.type == FileDialogType.OpenFile)
+                            {
+                                task = OpenFile(fileDialog.filter, fileDialog.defaultPath);
+                            }
+                            else if (fileDialog.type == FileDialogType.SaveFile)
+                            {
+                                task = SaveFile(fileDialog.filter, fileDialog.defaultPath);
+                            }
+                            else if (fileDialog.type == FileDialogType.ChooseDirectory)
+                            {
+                                task = ChooseDirectory(fileDialog.defaultPath);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException($"File dialog type `{fileDialog.type}` is not supported");
+                            }
 
-                    requestList.Add((world, r.entity, task));
+                            requestList.Add((world, entities[i], task));
+                        }
+                    }
                 }
             }
         }
