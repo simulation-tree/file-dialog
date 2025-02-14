@@ -1,10 +1,8 @@
 ﻿using FileDialogs.Functions;
 using Unmanaged;
-using Worlds;
 
 namespace FileDialogs.Components
 {
-    [Component]
     public struct IsFileDialog
     {
         public Chosen callback;
