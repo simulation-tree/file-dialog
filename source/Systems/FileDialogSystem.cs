@@ -35,10 +35,10 @@ namespace FileDialogs.Systems
             }
 
             //start tasks
-            ComponentType componentType = world.Schema.GetComponent<IsFileDialog>();
+            ComponentType componentType = world.Schema.GetComponentType<IsFileDialog>();
             foreach (Chunk chunk in world.Chunks)
             {
-                if (chunk.Definition.Contains(componentType))
+                if (chunk.Definition.ContainsComponent(componentType))
                 {
                     USpan<uint> entities = chunk.Entities;
                     USpan<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
