@@ -157,22 +157,22 @@ namespace FileDialogs.Systems
             }
         }
 
-        private static Task<DialogResult> OpenMultipleFiles(FixedString filter, FixedString defaultPath)
+        private static Task<DialogResult> OpenMultipleFiles(ASCIIText256 filter, ASCIIText256 defaultPath)
         {
             return Task.Factory.StartNew(() => Dialog.FileOpenMultiple(filter.ToString(), defaultPath.ToString()));
         }
 
-        private static Task<DialogResult> OpenFile(FixedString filter, FixedString defaultPath)
+        private static Task<DialogResult> OpenFile(ASCIIText256 filter, ASCIIText256 defaultPath)
         {
             return Task.Factory.StartNew(() => Dialog.FileOpen(filter.ToString(), defaultPath.ToString()));
         }
 
-        private static Task<DialogResult> SaveFile(FixedString filter, FixedString defaultPath)
+        private static Task<DialogResult> SaveFile(ASCIIText256 filter, ASCIIText256 defaultPath)
         {
             return Task.Factory.StartNew(() => Dialog.FileSave(filter.ToString(), defaultPath.ToString()));
         }
 
-        private static Task<DialogResult> ChooseDirectory(FixedString defaultPath)
+        private static Task<DialogResult> ChooseDirectory(ASCIIText256 defaultPath)
         {
             return Task.Factory.StartNew(() => Dialog.FolderPicker(defaultPath.ToString()));
         }

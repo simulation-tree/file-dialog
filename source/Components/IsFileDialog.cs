@@ -8,11 +8,11 @@ namespace FileDialogs.Components
         public Chosen callback;
         public FileDialogStatus state;
         public FileDialogType type;
-        public FixedString filter;
-        public FixedString defaultPath;
+        public ASCIIText256 filter;
+        public ASCIIText256 defaultPath;
         public ulong userData;
 
-        public IsFileDialog(Chosen callback, FileDialogType type, FixedString filter, FixedString defaultPath, ulong userData)
+        public IsFileDialog(Chosen callback, FileDialogType type, ASCIIText256 filter, ASCIIText256 defaultPath, ulong userData)
         {
             this.callback = callback;
             this.type = type;

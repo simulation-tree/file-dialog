@@ -30,7 +30,7 @@ namespace FileDialogs.Functions
 
         public readonly void Invoke(World world, FileDialogType type, FileDialogStatus status, USpan<Text> paths, ulong userData)
         {
-            using Allocation pathsAllocation = Allocation.Create(paths);
+            using MemoryAddress pathsAllocation = MemoryAddress.Allocate(paths);
             function(new Input(world, type, status, pathsAllocation, paths.Length, userData));
         }
 
@@ -51,7 +51,7 @@ namespace FileDialogs.Functions
             public readonly FileDialogStatus status;
             public readonly ulong userData;
 
-            private readonly Allocation paths;
+            private readonly MemoryAddress paths;
             private readonly uint pathCount;
 
             /// <summary>
@@ -66,7 +66,7 @@ namespace FileDialogs.Functions
             /// </summary>
             public readonly USpan<Text> Paths => new(paths.Pointer, pathCount);
 
-            public Input(World world, FileDialogType type, FileDialogStatus status, Allocation paths, uint pathCount, ulong userData)
+            public Input(World world, FileDialogType type, FileDialogStatus status, MemoryAddress paths, uint pathCount, ulong userData)
             {
                 this.world = world;
                 this.type = type;
