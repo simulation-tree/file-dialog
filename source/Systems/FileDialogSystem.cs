@@ -40,9 +40,9 @@ namespace FileDialogs.Systems
             {
                 if (chunk.Definition.ContainsComponent(componentType))
                 {
-                    USpan<uint> entities = chunk.Entities;
-                    USpan<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
-                    for (uint i = 0; i < entities.Length; i++)
+                    ReadOnlySpan<uint> entities = chunk.Entities;
+                    Span<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
+                    for (int i = 0; i < entities.Length; i++)
                     {
                         ref IsFileDialog fileDialog = ref components[i];
                         if (fileDialog.state == FileDialogStatus.Uninitialized)
@@ -107,8 +107,8 @@ namespace FileDialogs.Systems
                         pathCount += result.Paths.Count;
                     }
 
-                    USpan<Text> paths = stackalloc Text[pathCount];
-                    uint index = 0;
+                    Span<Text> paths = stackalloc Text[pathCount];
+                    int index = 0;
                     if (path is not null)
                     {
                         paths[index++] = new(path);
@@ -124,7 +124,7 @@ namespace FileDialogs.Systems
 
                     component.callback.Invoke(world, component.type, component.state, paths, component.userData);
 
-                    for (uint i = 0; i < pathCount; i++)
+                    for (int i = 0; i < pathCount; i++)
                     {
                         paths[i].Dispose();
                     }
@@ -134,13 +134,13 @@ namespace FileDialogs.Systems
                     if (result.IsCancelled)
                     {
                         component.state = FileDialogStatus.Cancelled;
-                        USpan<Text> paths = stackalloc Text[0];
+                        System.Span<Text> paths = stackalloc Text[0];
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                     }
                     else
                     {
                         component.state = FileDialogStatus.Failed;
-                        USpan<Text> paths = stackalloc Text[1];
+                        System.Span<Text> paths = stackalloc Text[1];
                         paths[0] = new(result.ErrorMessage);
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                         paths[0].Dispose();
@@ -150,7 +150,7 @@ namespace FileDialogs.Systems
             else
             {
                 component.state = FileDialogStatus.Failed;
-                USpan<Text> paths = stackalloc Text[1];
+                System.Span<Text> paths = stackalloc Text[1];
                 paths[0] = new("NotCompletedSuccessfully");
                 component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                 paths[0].Dispose();

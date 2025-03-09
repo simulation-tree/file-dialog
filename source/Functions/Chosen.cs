@@ -28,7 +28,7 @@ namespace FileDialogs.Functions
             return ((nint)function).GetHashCode();
         }
 
-        public readonly void Invoke(World world, FileDialogType type, FileDialogStatus status, USpan<Text> paths, ulong userData)
+        public readonly void Invoke(World world, FileDialogType type, FileDialogStatus status, ReadOnlySpan<Text> paths, ulong userData)
         {
             using MemoryAddress pathsAllocation = MemoryAddress.Allocate(paths);
             function(new Input(world, type, status, pathsAllocation, paths.Length, userData));
@@ -52,7 +52,7 @@ namespace FileDialogs.Functions
             public readonly ulong userData;
 
             private readonly MemoryAddress paths;
-            private readonly uint pathCount;
+            private readonly int pathCount;
 
             /// <summary>
             /// Array of paths chosen.
@@ -64,9 +64,9 @@ namespace FileDialogs.Functions
             /// If <see cref="status"/> is cancelled, it will be empty.
             /// </para>
             /// </summary>
-            public readonly USpan<Text> Paths => new(paths.Pointer, pathCount);
+            public readonly ReadOnlySpan<Text> Paths => new(paths.Pointer, pathCount);
 
-            public Input(World world, FileDialogType type, FileDialogStatus status, MemoryAddress paths, uint pathCount, ulong userData)
+            public Input(World world, FileDialogType type, FileDialogStatus status, MemoryAddress paths, int pathCount, ulong userData)
             {
                 this.world = world;
                 this.type = type;
