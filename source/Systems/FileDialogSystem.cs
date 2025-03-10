@@ -134,13 +134,13 @@ namespace FileDialogs.Systems
                     if (result.IsCancelled)
                     {
                         component.state = FileDialogStatus.Cancelled;
-                        System.Span<Text> paths = stackalloc Text[0];
+                        Span<Text> paths = stackalloc Text[0];
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                     }
                     else
                     {
                         component.state = FileDialogStatus.Failed;
-                        System.Span<Text> paths = stackalloc Text[1];
+                        Span<Text> paths = stackalloc Text[1];
                         paths[0] = new(result.ErrorMessage);
                         component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                         paths[0].Dispose();
@@ -150,7 +150,7 @@ namespace FileDialogs.Systems
             else
             {
                 component.state = FileDialogStatus.Failed;
-                System.Span<Text> paths = stackalloc Text[1];
+                Span<Text> paths = stackalloc Text[1];
                 paths[0] = new("NotCompletedSuccessfully");
                 component.callback.Invoke(world, component.type, component.state, paths, component.userData);
                 paths[0].Dispose();
