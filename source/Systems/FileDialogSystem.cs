@@ -11,17 +11,21 @@ namespace FileDialogs.Systems
 {
     public readonly partial struct FileDialogSystem : ISystem
     {
-        private static readonly Dictionary<SystemContainer, List<(World, uint, Task<DialogResult>)>> requests = new();
+        private static readonly Dictionary<SystemContext, List<(World, uint, Task<DialogResult>)>> requests = new();
 
-        void ISystem.Start(in SystemContainer systemContainer, in World world)
+        readonly void IDisposable.Dispose()
         {
-            requests[systemContainer] = new();
         }
 
-        void ISystem.Update(in SystemContainer systemContainer, in World world, in TimeSpan delta)
+        void ISystem.Start(in SystemContext context, in World world)
+        {
+            requests[context] = new();
+        }
+
+        void ISystem.Update(in SystemContext context, in World world, in TimeSpan delta)
         {
             //check each task if theyre finished
-            List<(World, uint, Task<DialogResult>)> requestList = requests[systemContainer];
+            List<(World, uint, Task<DialogResult>)> requestList = requests[context];
             for (int i = requestList.Count - 1; i >= 0; i--)
             {
                 (World world, uint entity, Task<DialogResult> task) request = requestList[i];
@@ -35,13 +39,13 @@ namespace FileDialogs.Systems
             }
 
             //start tasks
-            ComponentType componentType = world.Schema.GetComponentType<IsFileDialog>();
+            int componentType = world.Schema.GetComponentType<IsFileDialog>();
             foreach (Chunk chunk in world.Chunks)
             {
                 if (chunk.Definition.ContainsComponent(componentType))
                 {
                     ReadOnlySpan<uint> entities = chunk.Entities;
-                    Span<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
+                    ComponentEnumerator<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
                     for (int i = 0; i < entities.Length; i++)
                     {
                         ref IsFileDialog fileDialog = ref components[i];
@@ -77,7 +81,7 @@ namespace FileDialogs.Systems
             }
         }
 
-        void ISystem.Finish(in SystemContainer systemContainer, in World world)
+        void ISystem.Finish(in SystemContext context, in World world)
         {
             //todo: implement cancelling those tasks
         }
