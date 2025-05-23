@@ -9,26 +9,23 @@ using Worlds;
 
 namespace FileDialogs.Systems
 {
-    public readonly partial struct FileDialogSystem : ISystem
+    public class FileDialogSystem : ISystem
     {
-        private static readonly Dictionary<SystemContext, List<(World, uint, Task<DialogResult>)>> requests = new();
+        private static readonly Dictionary<World, List<RequestTask>> requests = new();
 
-        readonly void IDisposable.Dispose()
+        void ISystem.Update(Simulator simulator, double deltaTime)
         {
-        }
+            World world = simulator.world;
+            if (!requests.TryGetValue(world, out List<RequestTask>? requestList))
+            {
+                requestList = new();
+                requests.Add(world, requestList);
+            }
 
-        void ISystem.Start(in SystemContext context, in World world)
-        {
-            requests[context] = new();
-        }
-
-        void ISystem.Update(in SystemContext context, in World world, in TimeSpan delta)
-        {
             //check each task if theyre finished
-            List<(World, uint, Task<DialogResult>)> requestList = requests[context];
             for (int i = requestList.Count - 1; i >= 0; i--)
             {
-                (World world, uint entity, Task<DialogResult> task) request = requestList[i];
+                RequestTask request = requestList[i];
                 if (request.task.IsCompleted)
                 {
                     requestList.RemoveAt(i);
@@ -74,16 +71,11 @@ namespace FileDialogs.Systems
                                 throw new NotSupportedException($"File dialog type `{fileDialog.type}` is not supported");
                             }
 
-                            requestList.Add((world, entities[i], task));
+                            requestList.Add(new(world, entities[i], task));
                         }
                     }
                 }
             }
-        }
-
-        void ISystem.Finish(in SystemContext context, in World world)
-        {
-            //todo: implement cancelling those tasks
         }
 
         private static void HandleDialogResult(World world, uint entity, DialogResult? result)
