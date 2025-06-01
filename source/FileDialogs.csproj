@@ -12,7 +12,7 @@
         <Authors>popcron</Authors>
         <Company>simulation-tree</Company>
         <RepositoryUrl>https://github.com/simulation-tree/file-dialog</RepositoryUrl>
-        <PackageId/>
+        <PackageId />
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,12 +24,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NativeFileDialogSharp" Version="0.6.0-alpha"/>
+        <PackageReference Include="NativeFileDialogSharp" Version="0.6.0-alpha" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\worlds\core\Worlds.Core.csproj"/>
-        <ProjectReference Include="..\..\simulation\core\Simulation.Core.csproj"/>
+        <ProjectReference Include="..\..\worlds\core\Worlds.Core.csproj" />
+        <ProjectReference Include="..\..\simulation\core\Simulation.Core.csproj" />
         <ProjectReference Include="..\..\simulation\generator\Simulation.Generator.csproj">
             <OutputItemType>Analyzer</OutputItemType>
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

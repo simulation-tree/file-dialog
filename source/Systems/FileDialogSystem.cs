@@ -1,4 +1,5 @@
 ﻿using FileDialogs.Components;
+using FileDialogs.Messages;
 using NativeFileDialogSharp;
 using Simulation;
 using System;
@@ -9,26 +10,34 @@ using Worlds;
 
 namespace FileDialogs.Systems
 {
-    public class FileDialogSystem : ISystem
+    public partial class FileDialogSystem : SystemBase, IListener<FileDialogUpdate>
     {
-        private static readonly Dictionary<World, List<RequestTask>> requests = new();
+        private readonly World world;
+        private readonly List<RequestTask> requests;
+        private readonly int fileDialogType;
 
-        void ISystem.Update(Simulator simulator, double deltaTime)
+        public FileDialogSystem(Simulator simulator, World world) : base(simulator)
         {
-            World world = simulator.world;
-            if (!requests.TryGetValue(world, out List<RequestTask>? requestList))
-            {
-                requestList = new();
-                requests.Add(world, requestList);
-            }
+            this.world = world;
+            requests = new();
+            Schema schema = world.Schema;
+            fileDialogType = schema.GetComponentType<IsFileDialog>();
+        }
 
+        public override void Dispose()
+        {
+            //todo: implement cancelling the tasks
+        }
+
+        void IListener<FileDialogUpdate>.Receive(ref FileDialogUpdate message)
+        {
             //check each task if theyre finished
-            for (int i = requestList.Count - 1; i >= 0; i--)
+            for (int i = requests.Count - 1; i >= 0; i--)
             {
-                RequestTask request = requestList[i];
+                RequestTask request = requests[i];
                 if (request.task.IsCompleted)
                 {
-                    requestList.RemoveAt(i);
+                    requests.RemoveAt(i);
                     DialogResult? result = request.task.IsCompletedSuccessfully ? request.task.Result : null;
                     HandleDialogResult(request.world, request.entity, result);
                     request.world.DestroyEntity(request.entity);
@@ -36,13 +45,12 @@ namespace FileDialogs.Systems
             }
 
             //start tasks
-            int componentType = world.Schema.GetComponentType<IsFileDialog>();
             foreach (Chunk chunk in world.Chunks)
             {
-                if (chunk.Definition.ContainsComponent(componentType))
+                if (chunk.Definition.ContainsComponent(fileDialogType))
                 {
                     ReadOnlySpan<uint> entities = chunk.Entities;
-                    ComponentEnumerator<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(componentType);
+                    ComponentEnumerator<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(fileDialogType);
                     for (int i = 0; i < entities.Length; i++)
                     {
                         ref IsFileDialog fileDialog = ref components[i];
@@ -71,7 +79,7 @@ namespace FileDialogs.Systems
                                 throw new NotSupportedException($"File dialog type `{fileDialog.type}` is not supported");
                             }
 
-                            requestList.Add(new(world, entities[i], task));
+                            requests.Add(new(world, entities[i], task));
                         }
                     }
                 }
