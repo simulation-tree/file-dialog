@@ -13,7 +13,7 @@
     <Company>simulation-tree</Company>
     <RepositoryUrl>https://github.com/simulation-tree/file-dialog</RepositoryUrl>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <OutDir>bin/$(TargetFramework)/$(Configuration)</OutDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -46,11 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin/Debug/net9.0/FileDialogs.dll" Pack="true" PackagePath="tools/debug/FileDialogs.dll" Visible="false"/>
-    <Content Include="bin/Debug/net9.0/FileDialogs.xml" Pack="true" PackagePath="tools/debug/FileDialogs.xml" Visible="false" Condition="Exists('bin/Debug/net9.0/FileDialogs.xml')"/>
-    <Content Include="bin/Release/net9.0/FileDialogs.dll" Pack="true" PackagePath="tools/release/FileDialogs.dll" Visible="false"/>
-    <Content Include="bin/Release/net9.0/FileDialogs.xml" Pack="true" PackagePath="tools/release/FileDialogs.xml" Visible="false" Condition="Exists('bin/Release/net9.0/FileDialogs.xml')"/>
-    <Content Include="build/FileDialogs.targets" Pack="true" PackagePath="build/FileDialogs.targets" Visible="false"/>
+    <Content Include="bin/**/*" Pack="true" PackagePath="lib" Visible="false"/>
+    <Content Include="buildTransitive/**/*" Pack="true" PackagePath="buildTransitive"/>
   </ItemGroup>
 
 </Project>
