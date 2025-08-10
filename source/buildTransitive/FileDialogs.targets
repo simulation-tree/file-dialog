@@ -3,7 +3,7 @@
 
     <ItemGroup>
         <Reference Include="FileDialogs">
-            <HintPath>$(MSBuildThisFileDirectory)..\lib\net9.0\$(Configuration)\FileDialogs.dll</HintPath>
+            <HintPath>$(MSBuildThisFileDirectory)..\lib\$(TargetFramework)\$(Configuration)\FileDialogs.dll</HintPath>
         </Reference>
     </ItemGroup>
 

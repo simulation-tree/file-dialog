@@ -45,8 +45,10 @@ namespace FileDialogs.Systems
             }
 
             //start tasks
-            foreach (Chunk chunk in world.Chunks)
+            ReadOnlySpan<Chunk> chunks = world.Chunks;
+            for (int c = 0; c < chunks.Length; c++)
             {
+                Chunk chunk = chunks[c];
                 if (chunk.Definition.ContainsComponent(fileDialogType))
                 {
                     ReadOnlySpan<uint> entities = chunk.Entities;
