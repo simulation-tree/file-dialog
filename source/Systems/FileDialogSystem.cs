@@ -49,7 +49,7 @@ namespace FileDialogs.Systems
             for (int c = 0; c < chunks.Length; c++)
             {
                 Chunk chunk = chunks[c];
-                if (chunk.Definition.ContainsComponent(fileDialogType))
+                if (chunk.componentTypes.Contains(fileDialogType))
                 {
                     ReadOnlySpan<uint> entities = chunk.Entities;
                     ComponentEnumerator<IsFileDialog> components = chunk.GetComponents<IsFileDialog>(fileDialogType);
