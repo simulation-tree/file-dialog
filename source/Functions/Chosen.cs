@@ -64,7 +64,7 @@ namespace FileDialogs.Functions
             /// If <see cref="status"/> is cancelled, it will be empty.
             /// </para>
             /// </summary>
-            public readonly ReadOnlySpan<Text> Paths => new(paths.Pointer, pathCount);
+            public readonly ReadOnlySpan<Text> Paths => new(paths.pointer, pathCount);
 
             public Input(World world, FileDialogType type, FileDialogStatus status, MemoryAddress paths, int pathCount, ulong userData)
             {
